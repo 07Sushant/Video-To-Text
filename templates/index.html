@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Summarizer</title>
+    <title>Summarizer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,6 +19,7 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center the form container */
         }
         h1, h2 {
             margin-bottom: 10px;
@@ -38,26 +39,56 @@
         }
         #progressBar .progress {
             height: 100%;
-            background-color: #4caf50;
+            background-color: #ffffff;
             border-radius: 10px;
             transition: width 0.5s ease;
+        }
+        #loadingMessage {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        /* Hover effect for button */
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        /* Hover effect for input field */
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #4caf50;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>YouTube Video Summarizer</h1>
+        <h1>Video Summarizer</h1>
         <form id="summarizeForm">
             <label for="video_url">Enter YouTube Video URL:</label><br>
             <input type="text" id="video_url" name="video_url" style="width: 100%; margin-bottom: 10px;"><br>
             <button type="submit" style="width: 100%;">Summarize</button>
         </form>
 
+        <div id="loadingMessage">Processing...</div>
+
         <div id="summarizationResult" style="display: none;">
             <h2>Summarization Result</h2>
-            <h3>Original Text:</h3>
+            <h3>Original Context:</h3>
             <p id="original_text"></p>
-            <h3>Summarized Text:</h3>
+            <h3>Summarized Context:</h3>
             <p id="summarized_text"></p>
         </div>
 
@@ -70,11 +101,16 @@
         document.getElementById('summarizeForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
 
+            // Show loading message
+            document.getElementById('loadingMessage').style.display = 'block';
+
             // Hide previous results
             document.getElementById('summarizationResult').style.display = 'none';
 
             // Display progress bar
-            document.getElementById('progressBar').style.display = 'block';
+            var progressBar = document.getElementById('progressBar');
+            var progress = progressBar.querySelector('.progress');
+            progressBar.style.display = 'block';
 
             // Get the video URL input
             var videoUrl = document.getElementById('video_url').value;
@@ -93,8 +129,11 @@
                 document.getElementById('original_text').textContent = data.original_text;
                 document.getElementById('summarized_text').textContent = data.summarized_text;
 
+                // Hide loading message
+                document.getElementById('loadingMessage').style.display = 'none';
+
                 // Hide progress bar
-                document.getElementById('progressBar').style.display = 'none';
+                progressBar.style.display = 'none';
 
                 // Display the summarization result
                 document.getElementById('summarizationResult').style.display = 'block';
